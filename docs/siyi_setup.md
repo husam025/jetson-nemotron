@@ -25,15 +25,25 @@ processed by the NVIDIA Jetson Orin Nano for object detection and tracking.
 
 ### 2.2 Current Status
 
-The C12 camera has been identified and tested as part of the initial
-system familiarisation.
+### 2.2 Current Status
 
-During bench testing, camera video was observed through the available
-SIYI/MK15 system.
+The C12 camera has been identified and tested as part of the system
+familiarisation and bench-testing stage.
 
-Further investigation is required to determine the exact video transport
-method and the interface through which the stream can be accessed by an
-external processing platform such as the Jetson.
+During bench testing, live video from the C12 was successfully observed
+through the SIYI MK15 system.
+
+Two RTSP video streams were identified through the SIYI gimbal application:
+
+- RTSP Stream 1: RGB camera feed
+- RTSP Stream 2: Thermal camera feed
+
+The corresponding stream addresses were entered into the available Camera 1
+and Camera 2 options in the SIYI FPV application, and both RGB and thermal
+video feeds were successfully displayed.
+
+Direct reception and decoding of these RTSP streams by the NVIDIA Jetson
+Orin Nano has not yet been verified.
 
 ## 3. SIYI MK15 Ground Controller
 
@@ -47,25 +57,48 @@ be monitored during bench testing.
 
 ### 3.2 Current Video Observation
 
-During the initial bench test, the C12 camera video was successfully
-observed on the MK15 through the SkyDroid gimbal application.
+### 3.2 Current Video Observation
 
-This confirms that the camera and ground-side system can establish a
-working video display under the tested setup.
+During bench testing, the C12 camera video was successfully observed on the
+MK15 through the SIYI FPV application.
 
-The exact transport mechanism used by the video system has not yet been
-confirmed. RTSP and other possible video-access methods will be
-investigated separately.
+Two RTSP streams were identified through the SIYI gimbal application:
+
+- Stream 1: RGB
+- Stream 2: Thermal
+
+The corresponding RTSP stream addresses were configured in the SIYI FPV
+application using the available Camera 1 and Camera 2 options. Both streams
+were successfully displayed during testing.
+
+The MK15 also displayed H.265/HEVC decoding information during the observed
+video test. The displayed stream statistics showed a Loss Count of 0 at the
+time of observation.
+
+The direct video path from the SIYI system to the Jetson remains under
+investigation.
 
 ### 3.3 Connectivity Status
 
-The physical and network interfaces between the C12, MK15 and external
-processing hardware are being documented and verified progressively.
+### 3.3 Connectivity Status
 
-At the current stage, no specific RTSP URL, codec, IP configuration or
-video-stream endpoint is recorded as confirmed.
+The C12/MK15 video system has been successfully tested using the available
+wireless connection between the camera/video system and the MK15.
 
-These parameters will be added after experimental verification.
+RTSP stream addresses were obtained during the bench investigation. The
+identified streams correspond to:
+
+- Stream 1: RGB
+- Stream 2: Thermal
+
+The RTSP addresses contain a private IP address and port and were successfully
+used to display the corresponding feeds through the SIYI FPV application.
+
+The exact network configuration and the method required for direct access
+from the NVIDIA Jetson Orin Nano are still being investigated.
+
+Resolution, input FPS and end-to-end video latency have not yet been
+experimentally measured.
 
 ### 3.4 Documentation
 
@@ -114,16 +147,24 @@ used to verify the behaviour of the actual hardware setup.
 ### 4.3 Verification Status
 
 | Item | Current Status |
+### 4.3 Verification Status
+
+| Item | Current Status |
 |---|---|
 | C12 identified | Completed |
 | MK15 identified | Completed |
 | C12 video operation observed | Completed |
 | Video displayed on MK15 | Completed |
-| Exact video transport protocol | Under investigation |
-| RTSP availability | Under investigation |
-| Video stream endpoint/URL | Not yet verified |
-| Codec | Not yet verified |
-| Resolution/FPS | To be recorded during video testing |
-| Jetson video connection | Not yet established |
+| RGB RTSP stream identified | Completed |
+| Thermal RTSP stream identified | Completed |
+| RTSP stream addresses obtained | Completed |
+| H.265/HEVC decoding observed on MK15 | Completed |
+| Loss Count observed as 0 during test | Completed for observed test |
+| Direct Jetson video connection | Not yet established |
+| Jetson video decoding | Not yet verified |
+| Resolution | Not yet measured |
+| Input FPS | Not yet measured |
+| End-to-end latency | Not yet measured |
 
-This table will be updated as the system is tested and verified.
+This table will be updated as further video-input and Jetson integration
+testing is performed.

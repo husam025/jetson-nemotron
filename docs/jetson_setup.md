@@ -105,8 +105,15 @@ the configured ROS 2 setup.
 
 ### 4.4 AI Environment Verification
 
+### 4.4 AI Environment Verification
+
 The local AI environment was also tested using Ollama and supported
 local model experimentation.
 
-Further AI benchmarking and computer-vision performance measurements will
-be carried out during the subsequent AI milestones.
+The Jetson platform setup and initial environment verification are complete.
+The next stage is to establish and verify the video-input path from the SIYI
+C12/MK15 system to the Jetson.
+
+Direct RTSP reception and H.265/HEVC video decoding on the Jetson have not yet
+been verified. These will be tested as part of the video-input milestone
+before beginning the YOLO inference stage.
