@@ -48,13 +48,27 @@ components:
 
 ### 2.5 Current Video Observation
 
-During initial bench testing, video from the C12 camera was successfully
-observed on the MK15 through the SkyDroid gimbal application.
+During bench testing, video from the SIYI C12 camera was successfully
+observed on the SIYI MK15 through the SIYI FPV application.
 
-The exact video transport path and protocol used between the C12, MK15 and
-external processing system have not yet been fully verified. Investigation
-of video-stream access, including RTSP availability, is being carried out
-as a separate task.
+Two RTSP video streams were identified through the SIYI gimbal application:
+
+- RTSP Stream 1: RGB camera feed
+- RTSP Stream 2: Thermal camera feed
+
+The RTSP addresses were observed in the form of a private IP address and
+port. The corresponding stream addresses were entered into the SIYI FPV
+application using the available Camera 1 and Camera 2 options, and the
+corresponding live video feeds were successfully displayed.
+
+During the observed bench test, the MK15 displayed H.265/HEVC decoding
+information. The displayed stream statistics also showed a Loss Count of 0
+at the time of observation.
+
+Direct reception and decoding of these RTSP streams by the NVIDIA Jetson
+Orin Nano has not yet been verified. Exact stream resolution, input frame
+rate
+and end-to-end video latency also remain to be measured.
 
 ## 3. Edge Computing Platform
 
@@ -92,50 +106,64 @@ sensor processing and AI capabilities on the edge-computing platform.
 
 ## 4. Current System Architecture
 
-The current system consists of an air-side UAV platform, a SIYI camera
-and ground-control system, and an NVIDIA Jetson Orin Nano edge-computing
-platform.
+## 4. Current System Architecture
 
-At the current stage, the major components are organized as follows:
+The current system consists of an air-side UAV platform, the SIYI C12
+camera, the SIYI MK15 ground-control/video system, and an NVIDIA Jetson
+Orin Nano edge-computing platform.
+
+The C12 RGB and thermal video streams have been experimentally identified
+as RTSP streams. The RGB feed is available through RTSP Stream 1 and the
+thermal feed through RTSP Stream 2. These streams have been successfully
+used by the SIYI FPV application during bench testing.
+
+The direct network/video path from the SIYI system to the Jetson remains
+under investigation.
 
 ```text
                     UAV / AIR SIDE
+
         ┌──────────────────────────────┐
-        │           TBS500             │
+        │            TBS500            │
         │                              │
         │   ┌──────────────────────┐   │
         │   │ Pix4 / Orange Cube    │   │
-        │   │ Flight Controller    │   │
+        │   │ Flight Controller     │   │
         │   └──────────────────────┘   │
         │                              │
         │   ┌──────────────────────┐   │
-        │   │ SIYI C12 Camera      │   │
+        │   │ SIYI C12 Camera       │   │
+        │   │                      │   │
+        │   │ RGB → RTSP Stream 1  │   │
+        │   │ Thermal → RTSP Stream 2│  │
         │   └──────────────────────┘   │
         └──────────────┬───────────────┘
                        │
-                       │ Video / Communication
-                       │ path under investigation
+                       │ SIYI Video /
+                       │ Communication Link
                        ▼
         ┌──────────────────────────────┐
         │          SIYI MK15           │
         │      Ground Controller       │
+        │                              │
+        │  SIYI FPV App                │
+        │  Live RGB / Thermal Video   │
         └──────────────┬───────────────┘
                        │
-                       │ Video access to Jetson
+                       │ RTSP access to Jetson
                        │ under investigation
                        ▼
         ┌──────────────────────────────┐
         │     NVIDIA Jetson Orin Nano  │
         │                              │
-        │  Video Processing            │
-        │       ↓                      │
-        │  AI Inference                │
-        │       ↓                      │
-        │  Object Detection            │
-        │       ↓                      │
-        │  Object Tracking             │
+        │  Video Acquisition / Decode  │
+        │             ↓                │
+        │      AI Inference            │
+        │             ↓                │
+        │    Object Detection          │
+        │             ↓                │
+        │     Object Tracking          │
         └──────────────────────────────┘
-
 
        
        
@@ -146,36 +174,58 @@ At the current stage, the major components are organized as follows:
        
  ## 5. Video and AI Processing Pipeline
 
-The planned edge-AI pipeline is designed to process video from the UAV
-camera locally on the NVIDIA Jetson Orin Nano.
+## 5. Video and AI Processing Pipeline
 
-### 5.1 Planned Pipeline
+The edge-AI pipeline is designed to process video from the SIYI C12 locally
+on the NVIDIA Jetson Orin Nano.
+
+The C12 currently provides two experimentally identified RTSP streams:
+
+- Stream 1: RGB
+- Stream 2: Thermal
+
+The RTSP streams have been successfully displayed through the SIYI FPV
+application during bench testing. Direct reception of these streams by the
+Jetson remains to be verified.
+
+### 5.1 Current and Planned Pipeline
 
 ```text
 SIYI C12 Camera
-       ↓
-SIYI MK15 / Video Communication System
-       ↓
-Video Stream to Jetson
-       ↓
-Video Acquisition and Decoding
-       ↓
-Frame Processing
-       ↓
-YOLO Object Detection
-       ↓
-Object Tracking
-       ↓
-Mission-Level Results
-
+       │
+       ├── RGB → RTSP Stream 1
+       │
+       └── Thermal → RTSP Stream 2
+                    │
+                    ▼
+             SIYI / MK15 System
+                    │
+                    ▼
+             RTSP Access to Jetson
+                    │
+              Under Verification
+                    ▼
+          Video Acquisition / Decoding
+                    │
+                    ▼
+             Frame Processing
+                    │
+                    ▼
+            YOLO Object Detection
+                    │
+                    ▼
+              Object Tracking
+                    │
+                    ▼
+           Mission-Level Results
 
 ## 6. Milestone Status
 
 | Milestone | Description | Status |
 |---|---|---|
 | M1 | Hardware familiarisation | Completed |
-| M2 | C12/MK15 bench testing | In progress |
-| M3 | Jetson video input | Not started |
+| M2 | C12/MK15 bench testing |Completed |
+| M3 | Jetson video input | In progress |
 | M4 | YOLO detection | Planned |
 | M5 | Object tracking | Planned |
 | M6 | Performance optimization | Planned |
@@ -183,9 +233,15 @@ Mission-Level Results
 
 ### M1 Completion
 
-The major UAV, SIYI and edge-computing components have been identified
-and documented. The Jetson Orin Nano environment has also been prepared
-for subsequent video-processing and AI development.
+### M1 Completion
 
-Further hardware and video-path verification will be documented as the
-project progresses through the subsequent milestones.
+The major UAV, SIYI and edge-computing components have been identified and
+documented. The Jetson Orin Nano environment has also been prepared for
+subsequent video-processing and AI development.
+
+During subsequent C12/MK15 bench testing, the RGB and thermal RTSP streams
+were identified and successfully displayed through the SIYI FPV application.
+H.265/HEVC decoding information was observed during the test.
+
+The direct RTSP video path to the Jetson, along with stream resolution,
+input FPS and end-to-end latency, remains to be verified and measured.
